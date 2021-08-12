@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Resume</title>
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="https://getbootstrap.com/docs/4.0/examples/starter-template/starter-template.css" rel="stylesheet">
+</head>
+<body>
+<main role="main" class="container">
+    <div class="starter-template">
+        <h1>Github Resume</h1>
+        <p class="lead">Search a Github user by username</p>
+        <form class="needs-validation" th:action="@{'/'}" method="post">
+            <div class="row">
+                <div class="col-md-2 mb-2"></div>
+                <div class="col-md-6 mb-4">
+                    <input type="text" class="form-control" name="username" id="username" placeholder="" value="" required="">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <button class="btn btn-primary btn-block" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

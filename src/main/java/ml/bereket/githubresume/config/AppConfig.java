@@ -16,6 +16,7 @@ public class AppConfig {
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        //if apiUsername and apiKey are not set, it tries to use access the apis unauthenticated - subjected to limited rate
         return builder.basicAuthentication(apiUsername, apiKey).build();
     }
 }

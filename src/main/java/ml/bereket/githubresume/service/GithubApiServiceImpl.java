@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -48,6 +49,9 @@ public class GithubApiServiceImpl implements GithubApiService {
                     User.class);
             return Optional.ofNullable(response.getBody());
 
+        } catch (HttpClientErrorException httpClientException){
+            logger.error(httpClientException.getMessage(), httpClientException);
+            throw httpClientException;
         } catch (Exception exception){
             logger.error(exception.getMessage(), exception);
             throw new RuntimeException(exception);
@@ -60,11 +64,18 @@ public class GithubApiServiceImpl implements GithubApiService {
         assert(StringUtils.hasText(reposUri));
         try{
 
+            final String searchUri = UriComponentsBuilder.fromUriString(reposUri)
+                    .queryParam("per_page", "100")
+                    .toUriString();
+
             ResponseEntity<Repository[]> response = restTemplate.getForEntity(
-                    reposUri,
+                    searchUri,
                     Repository[].class);
             return response.getBody();
 
+        } catch (HttpClientErrorException httpClientException) {
+            logger.error(httpClientException.getMessage(), httpClientException);
+            throw httpClientException;
         } catch (Exception exception){
             logger.error(exception.getMessage(), exception);
             throw new RuntimeException(exception);
@@ -72,16 +83,23 @@ public class GithubApiServiceImpl implements GithubApiService {
     }
 
     @Override
-    public Map<String, Double> languageRatioForRepository(String languagesForRepoUrl) {
+    public Map<String, Double> languageRatioForRepository(final String languagesForRepoUrl) {
 
         assert(StringUtils.hasText(languagesForRepoUrl));
+        try{
+            ParameterizedTypeReference<Map<String, Double>> responseType =
+                    new ParameterizedTypeReference<>() {};
 
-        ParameterizedTypeReference<Map<String, Double>> responseType =
-                new ParameterizedTypeReference<>() {};
+            ResponseEntity<Map<String, Double>> responseEntity =
+                    restTemplate.exchange(languagesForRepoUrl, HttpMethod.GET, null, responseType);
+            return responseEntity.getBody();
 
-        ResponseEntity<Map<String, Double>> responseEntity =
-                restTemplate.exchange(languagesForRepoUrl, HttpMethod.GET, null, responseType);
-
-        return responseEntity.getBody();
+        } catch (HttpClientErrorException httpClientException) {
+            logger.error(httpClientException.getMessage(), httpClientException);
+            throw httpClientException;
+        } catch (Exception exception){
+            logger.error(exception.getMessage(), exception);
+            throw new RuntimeException(exception);
+        }
     }
 }
