@@ -49,7 +49,9 @@ public class ResumeServiceImpl implements ResumeService {
 
         for(String language : totalLanguageOccurrence.keySet()){
             double occurrence = totalLanguageOccurrence.get(language);
-            languagesRatio.put(language, (occurrence/totalCodeBaseSize * 100));
+            double ratio = (occurrence/totalCodeBaseSize * 100);
+            //only consider a language with which a > 1% of the codebase is written
+            if(ratio > 1) languagesRatio.put(language, ratio);
         }
         return languagesRatio;
     }

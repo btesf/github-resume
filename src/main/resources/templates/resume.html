@@ -10,20 +10,54 @@
     <link href="https://getbootstrap.com/docs/4.0/examples/starter-template/starter-template.css" rel="stylesheet">
 </head>
 <body>
-<main role="main" class="container">
-    <div class="starter-template">
 
-    </div>
+<main role="main" class="container">
     <div class="row">
         <div class="col-md-12 order-md-1">
-            <h4 class="mb-3">Billing address</h4>
-
+            <h4 class="mb-3" th:utext="${profile.user.name}"></h4>
             <hr class="mb-4">
-
-            <h4 class="mb-3">Billing address</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <h5 class="mb-3">Website</h5>
+            </div>
+            <div class="col-md-9">
+                <span th:utext="${profile.user.blog}"></span>
+            </div>
             <hr class="mb-4">
-
-            <h4 class="mb-3">Billing address</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <h5 class="mb-3">Languages</h5>
+            </div>
+            <div class="col-md-9">
+                <table>
+                    <tr th:each ="language : ${profile.languages}">
+                        <td th:utext="${language.key}"></td>
+                        <td th:utext="${#numbers.formatDecimal(language.value, 1, 'COMMA', 2, 'POINT') + ' %'}"></td>
+                    </tr>
+                </table>
+            </div>
+            <hr class="mb-4">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <h5 class="mb-3">Popular Repositories</h5>
+            </div>
+            <div class="col-md-9">
+                <ul th:each ="repository : ${profile.repositories}">
+                   <li>
+                       <h6 th:utext="${repository.name}"></h6>
+                       <p th:utext="${repository.description}"></p>
+                   </li>
+                </ul>
+            </div>
             <hr class="mb-4">
         </div>
     </div>
