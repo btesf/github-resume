@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -59,7 +60,7 @@ public class GithubApiServiceImpl implements GithubApiService {
     }
 
     @Override
-    public Repository[] getUserRepositories(final String reposUri) {
+    public List<Repository> getUserRepositories(final String reposUri) {
 
         assert(StringUtils.hasText(reposUri));
         try{
@@ -71,7 +72,14 @@ public class GithubApiServiceImpl implements GithubApiService {
             ResponseEntity<Repository[]> response = restTemplate.getForEntity(
                     searchUri,
                     Repository[].class);
-            return response.getBody();
+
+            Repository[] repositories = response.getBody();
+            if(repositories == null || repositories.length == 0) return new ArrayList<>();
+
+            //filter only non-forked Repositories
+            return Arrays.stream(repositories)
+                    .filter(r -> !r.getFork())
+                    .collect(Collectors.toList());
 
         } catch (HttpClientErrorException httpClientException) {
             logger.error(httpClientException.getMessage(), httpClientException);

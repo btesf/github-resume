@@ -25,9 +25,9 @@ public class ResumeServiceImpl implements ResumeService {
         GithubProfile profile = new GithubProfile();
         profile.setUser(user.get());
 
-        Repository[] repositories = githubApiService.getUserRepositories(user.get().reposUrl);
+        List<Repository> repositories = githubApiService.getUserRepositories(user.get().reposUrl);
 
-        if(repositories.length != 0){
+        if(repositories.size() != 0){
             //sort repositories by no. of stars first then by forks and set to profile
             List<Repository> sortedRepositories = getReposSortedByPopularity(repositories);
             profile.setRepositories(sortedRepositories);
@@ -56,7 +56,7 @@ public class ResumeServiceImpl implements ResumeService {
         return languagesRatio;
     }
 
-    public  Map<String, Double> getCodebaseSizeSummaryByLanguage(Repository[] repositories) {
+    public  Map<String, Double> getCodebaseSizeSummaryByLanguage(List<Repository> repositories) {
 
         Map<String, Double> totalCodebaseSizeByLanguage = new HashMap<>();
         for(Repository repository : repositories){
@@ -78,9 +78,9 @@ public class ResumeServiceImpl implements ResumeService {
         return totalCodebaseSizeByLanguage;
     }
 
-    public List<Repository> getReposSortedByPopularity(Repository[] repositories) {
+    public List<Repository> getReposSortedByPopularity(List<Repository> repositories) {
         Comparator<Repository> comparator = Comparator.comparing((Repository repo) -> repo.stargazersCount).reversed()
                 .thenComparing(Repository::getForksCount, Comparator.reverseOrder());
-        return Arrays.stream(repositories).sorted(comparator).collect(Collectors.toList());
+        return repositories.stream().sorted(comparator).collect(Collectors.toList());
     }
 }

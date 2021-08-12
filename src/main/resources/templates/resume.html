@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Resume</title>
     <!-- Bootstrap core CSS -->
-    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/4.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href="https://getbootstrap.com/docs/4.0/examples/starter-template/starter-template.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/4.1/examples/starter-template/starter-template.css" rel="stylesheet">
 </head>
 <body>
 
@@ -21,10 +21,22 @@
     <div class="row">
         <div class="col-md-12">
             <div class="col-md-3">
+                <h5 class="mb-3">Github Profile</h5>
+            </div>
+            <div class="col-md-9">
+                On GitHub since: <span th:utext="${#strings.substringBefore(profile.user.createdAt,'-')}"></span> <br/>
+                Location: <span th:utext="${profile.user.location}"></span> <br/>
+                Public repositories: <span th:utext="${profile.user.publicRepos}"></span> <br/>
+                Followers: <span th:utext="${profile.user.followers}"></span> <br/>
+            </div>
+            <hr class="mb-4">
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-3">
                 <h5 class="mb-3">Website</h5>
             </div>
             <div class="col-md-9">
-                <span th:utext="${profile.user.blog}"></span>
+                <a th:href="@{${profile.user.blog}}" th:utext="${profile.user.blog}">...</a>
             </div>
             <hr class="mb-4">
         </div>
@@ -35,12 +47,13 @@
                 <h5 class="mb-3">Languages</h5>
             </div>
             <div class="col-md-9">
-                <table>
-                    <tr th:each ="language : ${profile.languages}">
-                        <td th:utext="${language.key}"></td>
-                        <td th:utext="${#numbers.formatDecimal(language.value, 1, 'COMMA', 2, 'POINT') + ' %'}"></td>
-                    </tr>
-                </table>
+                <ul th:each ="language : ${profile.languages}">
+                    <li>
+                        <a th:href="@{'https://github.com/search?q=user:' + ${profile.user.login} + '&l=' + ${language.key}}" th:utext="${language.key}">...</a>
+                        &nbsp;
+                        (<span th:utext="${#numbers.formatDecimal(language.value, 1, 'COMMA', 2, 'POINT') + ' %'}"></span>)
+                    </li>
+                </ul>
             </div>
             <hr class="mb-4">
         </div>
@@ -53,8 +66,14 @@
             <div class="col-md-9">
                 <ul th:each ="repository : ${profile.repositories}">
                    <li>
-                       <h6 th:utext="${repository.name}"></h6>
+                       <h6><a th:href="@{${repository.htmlUrl}}" th:utext="${repository.name}">...</a></h6>
+                       <small><span th:utext="${repository.language}"></span> - Creator & Owner</small>
                        <p th:utext="${repository.description}"></p>
+                       <p>
+                           <small> Stars: <span th:utext="${repository.stargazersCount}"></span> </small>
+                           <small> Forks: <span th:utext="${repository.forksCount}"></span> </small>
+                           <small> Click <a th:href="@{${repository.htmlUrl}}" th:utext="${'here'}">...</a> for more information.</small>
+                       </p>
                    </li>
                 </ul>
             </div>

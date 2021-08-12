@@ -31,7 +31,7 @@ public class ResumeServiceIntegrationTest {
 
         //languages ratio
         Map<String, Double> languageRatio = githubProfile.getLanguages();
-        Assertions.assertTrue(languageRatio.keySet().containsAll(Arrays.asList("Objective-C", "Swift", "JavaScript", "Swift")));
+        Assertions.assertTrue(languageRatio.keySet().containsAll(Arrays.asList("Objective-C", "Swift", "TypeScript", "Swift")));
 
         //popular repositories
         List<Repository> repositories = githubProfile.getRepositories();

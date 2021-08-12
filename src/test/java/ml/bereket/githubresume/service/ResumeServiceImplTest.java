@@ -9,10 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -49,12 +46,11 @@ class ResumeServiceImplTest {
     @Test
     void checkGetCodebaseSizeSummaryByLanguageTest(){
 
-        Repository[] repositories = new Repository[4];
-        AtomicInteger index = new AtomicInteger();
+        List<Repository> repositories = new ArrayList<>();
         Stream.of("Java", "Java", "C", "Groovy").forEach( lang -> {
             Repository repository = new Repository();
             repository.languagesUrl = lang;
-            repositories[index.getAndIncrement()] = repository;
+            repositories.add(repository);
         });
 
         Mockito.when(githubApiService.languageRatioForRepository("Java")).thenReturn(Collections.singletonMap("Java", 500d)).thenReturn(Collections.singletonMap("Java", 100d));
@@ -73,24 +69,24 @@ class ResumeServiceImplTest {
     @Test
     void checkGetReposSortedByPopularityTest(){
 
-        Repository[] repositories = new Repository[3];
+        List<Repository> repositories = new ArrayList<>();
         Repository repository = new Repository();
         repository.name = "a";
         repository.stargazersCount = 3;
         repository.forksCount = 1;
-        repositories[0] = repository;
+        repositories.add(repository);
 
         repository = new Repository();
         repository.name = "b";
         repository.stargazersCount = 2;
         repository.forksCount = 3;
-        repositories[1] = repository;
+        repositories.add(repository);
 
         repository = new Repository();
         repository.name = "c";
         repository.stargazersCount = 3;
         repository.forksCount = 4;
-        repositories[2] = repository;
+        repositories.add(repository);
 
         List<Repository> sortedRepositories = resumeServiceImpl.getReposSortedByPopularity(repositories);
         //"c" should come first; Has 3 stars and 4 forks
